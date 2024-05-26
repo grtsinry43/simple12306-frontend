@@ -11,8 +11,8 @@
     <ul class="banner-profile-container">
       <li class="banner-profile-username"></li>
       <li class="banner-profile-action">
-        <button>登录</button>
-        <button>退出登录</button>
+        <el-button type="primary">登录</el-button>
+        <el-button type="primary" plain>退出登录</el-button>
       </li>
     </ul>
   </div>
