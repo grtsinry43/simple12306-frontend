@@ -9,6 +9,6 @@ import Banner from "@/components/Banner.vue";
   <RouterLink>About</RouterLink>
 </template>
 
-<style scoped>
-
+<style lang="less" scoped>
+@import "@/styles/global";
 </style>
