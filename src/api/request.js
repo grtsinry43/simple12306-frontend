@@ -12,11 +12,14 @@ ins.interceptors.response.use(
             return null;
         }
 
-        //将返回的token存储到state中
-        if (resp.data.data.token) {
+        //将返回的token（响应头中）存储到state中
+        const token = resp.headers.authorization;
+        if (token) {
             const userStore = useUserStore();
-            userStore.setToken(resp.data.data.token);
+            userStore.setToken(token);
+            console.log(userStore.token)
         }
+
 
         // 成功则直接返回数据
         return resp.data.data;
@@ -25,6 +28,20 @@ ins.interceptors.response.use(
         // 错误的响应处理
         ElMessage.error(`获取数据失败：${error}`);
         return null;
+    });
+
+//每次需要携带token的请求都在这里统一处理
+ins.interceptors.request.use(
+    function (config) {
+        const userStore = useUserStore();
+        console.log(userStore.token);
+        if (userStore.token) {
+            config.headers.Authorization = `Bearer ${userStore.token}`;
+        }
+        return config;
+    },
+    function (error) {
+        return Promise.reject(error);
     });
 
 export default ins;

@@ -15,7 +15,7 @@ const logoutHandle = () => {
     </ul>
     <ul class="banner-profile-container">
       <li v-if="store.userName" class="banner-profile-username">当前登录的用户：{{ store.userName }}</li>
-      <RouterLink v-if="store.userName" :to="{ name: 'login'}">
+      <RouterLink v-if="store.userName" :to="{ name: 'user'}">
         <el-button type="primary">用户中心</el-button>
       </RouterLink>
       <li class="banner-profile-action">
