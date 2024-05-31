@@ -1,5 +1,5 @@
 //记录用户信息，登录状态，token，使用pinia
-import { defineStore } from 'pinia'
+import {defineStore} from 'pinia'
 
 export const useUserStore = defineStore({
     id: 'user',
@@ -7,7 +7,8 @@ export const useUserStore = defineStore({
         isLogin: false,
         token: '',
         userName: '',
-        userInfo: {}
+        userInfo: {},
+        tickets: {},
     }),
     actions: {
         login(data) {

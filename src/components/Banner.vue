@@ -10,8 +10,13 @@ const logoutHandle = () => {
 <template>
   <div class="banner-container">
     <span class="title">简单售票系统</span>
+
     <ul class="banner-item-container">
-      <li class="banner-item"></li>
+      <li class="banner-item">
+        <RouterLink :to="{ name: 'tickets'}">
+          <span>查询</span>
+        </RouterLink>
+      </li>
     </ul>
     <ul class="banner-profile-container">
       <li v-if="store.userName" class="banner-profile-username">当前登录的用户：{{ store.userName }}</li>

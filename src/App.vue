@@ -5,10 +5,14 @@ import Banner from "@/components/Banner.vue";
 
 <template>
   <Banner></Banner>
-  <RouterView/>
+  <RouterView class="router-view"/>
   <RouterLink>About</RouterLink>
 </template>
 
 <style lang="less" scoped>
 @import "@/styles/global";
+.router-view {
+  background: url('@/assets/bg.webp') no-repeat center center fixed;
+  background-size: cover;
+}
 </style>
