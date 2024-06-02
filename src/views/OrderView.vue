@@ -23,12 +23,11 @@ const fetchOrders = () => {
     console.log(res);
     state.orders.forEach(order => {
       res.forEach(ticket => {
-        if (order.ticketId === ticket.id) {
+        if (order.ticket_id === ticket.id) {
           order.title = ticket.title;
           order.from = ticket.from;
           order.to = ticket.to;
           order.price = ticket.price;
-          order.date = ticket.date;
         }
       })
     })
