@@ -32,6 +32,9 @@ export const useUserStore = defineStore({
         },
         setUserInfo(userInfo) {
             this.userInfo = userInfo;
+        },
+        setTickets(tickets) {
+            this.tickets = tickets;
         }
     }
 });

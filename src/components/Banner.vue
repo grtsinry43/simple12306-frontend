@@ -46,6 +46,7 @@ const logoutHandle = () => {
   top: 0;
   backdrop-filter: blur(5px);
   background: rgba(255, 255, 255, 0.3);
+  z-index: 99;
 
   .banner-profile-container {
     display: flex;

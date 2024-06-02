@@ -38,11 +38,18 @@ const loginHandle = () => {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 60%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 1;
 
   .el-form {
     width: 300px;
-    margin-top: 100px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 10px;
+    backdrop-filter: blur(20px);
+    padding: 60px 40px 40px;
   }
 
   .el-form-item {

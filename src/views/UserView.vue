@@ -1,7 +1,7 @@
 <script setup>
 import {useUserStore} from "@/store/user.js";
 import {onMounted, reactive} from "vue";
-import {getInfo, updateInfo, verifyEdu} from "@/api/user.js";
+import {getInfo, updateInfo, verify, verifyEdu} from "@/api/user.js";
 
 const store = useUserStore();
 const state = reactive({
@@ -32,7 +32,13 @@ const updateInfoHandle = () => {
   console.log("提交用户信息");
   console.log(state.form);
   state.dialogVisible = false;
-  store.setUserInfo(state.form);
+  store.setUserInfo({
+    ...store.userInfo,
+    email: state.form.email,
+    phone: state.form.phone,
+    region: state.form.region,
+    gender: state.form.gender,
+  });
   updateInfo(state.form).then(res => {
     console.log(res);
   })
@@ -49,6 +55,9 @@ const verifyEduHandle = () => {
 }
 const verifyHandle = () => {
   console.log("实名认证");
+  verify(store.userName).then(res => {
+    console.log(res);
+  });
   store.setUserInfo({
     ...store.userInfo,
     isVerified: true
@@ -58,70 +67,80 @@ const verifyHandle = () => {
 
 <template>
   <div class="userinfo-container">
-    <div class="title">用户中心</div>
-    <div class="userinfo-inner">
-      <div class="key">用户id（系统生成）：</div>
-      <span>{{ store.userInfo.userId }}</span>
-      <div class="key">用户名：</div>
-      <span>{{ store.userName }}</span>
-      <div class="key">用户信息：</div>
-      <div class="info-item" v-for="(value, key) in store.userInfo" :key="key">
-        <div>{{ key }}: {{ value }}</div>
+    <div class="user-inner">
+      <div class="title">用户中心</div>
+      <div class="userinfo-inner">
+        <div class="key">用户id（系统生成）：</div>
+        <span>{{ store.userInfo.userId }}</span>
+        <div class="key">用户名：</div>
+        <span>{{ store.userName }}</span>
+        <div class="key">用户信息：</div>
+        <div class="info-item" v-for="(value, key) in store.userInfo" :key="key">
+          <div>{{ key }}: {{ value }}</div>
+        </div>
+      </div>
+      <div class="action">
+        <ElButton type="primary" @click="editInfoHandle">修改用户信息</ElButton>
+        <ElButton type="primary" v-if="!store.userInfo.isStudent" @click="verifyEduHandle">验证学生身份</ElButton>
+        <ElButton type="primary" v-if="!store.userInfo.isVerified" @click="verifyHandle">实名认证</ElButton>
       </div>
     </div>
-    <div class="action">
-      <ElButton type="primary" @click="editInfoHandle">修改用户信息</ElButton>
-      <ElButton type="primary" v-if="!store.userInfo.isStudent" @click="verifyEduHandle">验证学生身份</ElButton>
-      <ElButton type="primary" v-if="!store.userInfo.isVerified" @click="verifyHandle">实名认证</ElButton>
-    </div>
+    <ElDialog v-model="state.dialogVisible" title="修改用户信息">
+      <ElForm :model="state.form" label-width="80px">
+        <ElFormItem label="用户名">
+          <ElInput v-model="store.userName" disabled></ElInput>
+        </ElFormItem>
+        <ElFormItem label="邮箱">
+          <ElInput v-model="state.form.email"></ElInput>
+        </ElFormItem>
+        <ElFormItem label="电话">
+          <ElInput v-model="state.form.phone"></ElInput>
+        </ElFormItem>
+        <ElFormItem label="性别">
+          <ElRadioGroup v-model="state.form.gender">
+            <ElRadioButton label="男"></ElRadioButton>
+            <ElRadioButton label="女"></ElRadioButton>
+          </ElRadioGroup>
+        </ElFormItem>
+        <ElFormItem label="地区">
+          <ElInput v-model="state.form.region"></ElInput>
+        </ElFormItem>
+        <ElFormItem>
+          <ElButton type="primary" @click="updateInfoHandle">提交</ElButton>
+        </ElFormItem>
+      </ElForm>
+    </ElDialog>
   </div>
-  <ElDialog v-model="state.dialogVisible" title="修改用户信息">
-    <ElForm :model="state.form" label-width="80px">
-      <ElFormItem label="用户名">
-        <ElInput v-model="store.userName" disabled></ElInput>
-      </ElFormItem>
-      <ElFormItem label="邮箱">
-        <ElInput v-model="state.form.email"></ElInput>
-      </ElFormItem>
-      <ElFormItem label="电话">
-        <ElInput v-model="state.form.phone"></ElInput>
-      </ElFormItem>
-      <ElFormItem label="性别">
-        <ElRadioGroup v-model="state.form.gender">
-          <ElRadioButton label="男"></ElRadioButton>
-          <ElRadioButton label="女"></ElRadioButton>
-        </ElRadioGroup>
-      </ElFormItem>
-      <ElFormItem label="地区">
-        <ElInput v-model="state.form.region"></ElInput>
-      </ElFormItem>
-      <ElFormItem>
-        <ElButton type="primary" @click="updateInfoHandle">提交</ElButton>
-      </ElFormItem>
-    </ElForm>
-  </ElDialog>
+
 </template>
 
 <style scoped lang="less">
 .userinfo-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  width: 80%;
-  height: 80%;
+  z-index: 1;
+  padding: 40px;
+}
+.user-inner {
+  width: 60%;
+  margin-top: 20px;
   display: flex;
-  box-shadow: 0 0 5px 1px #ccc;
-  border-radius: 10px;
   flex-direction: column;
+  background: rgba(255, 255, 255, 0.3);
+  border-radius: 10px;
+  backdrop-filter: blur(20px);
   justify-content: center;
   align-items: center;
-
+  padding: 40px;
 }
 .userinfo-inner {
+  padding: 20px;
   width: 60%;
-  height: 60%;
-  margin-top: 20px;
 }
 .userinfo-inner .key{
   font-weight: bold;
