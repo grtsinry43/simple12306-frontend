@@ -9,10 +9,13 @@ export function newOrder(data) {
     })
 }
 
-export function getOrderList() {
+export function getOrders(userId) {
     return request({
         url: '/api/order/list',
         method: 'get',
+        params: {
+            userId,
+        }
     })
 }
 

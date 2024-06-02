@@ -27,6 +27,20 @@ const router = createRouter({
             name: 'tickets',
             component: () => import('../views/TicketsView.vue')
         },
+        {
+            path: '/order',
+            name: 'order',
+            component: () => import('../views/OrderView.vue')
+        },
+        {
+            path: '/404',
+            name: '404',
+            component: () => import('../views/404.vue')
+        },
+        {
+            path: '/:pathMatch(.*)*',
+            redirect: '/404'
+        }
 
     ]
 })

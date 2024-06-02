@@ -13,9 +13,12 @@ const logoutHandle = () => {
 
     <ul class="banner-item-container">
       <li class="banner-item">
-        <RouterLink :to="{ name: 'tickets'}">
-          <span>查询</span>
-        </RouterLink>
+        <RouterLink :to="{
+          name: 'home'
+        }" class="banner-link">首页</RouterLink>
+        <RouterLink :to="{
+          name: 'order'
+        }" class="banner-link">订单管理</RouterLink>
       </li>
     </ul>
     <ul class="banner-profile-container">
@@ -65,5 +68,11 @@ ul {
   list-style: none;
   margin: 0;
   padding: 0;
+}
+
+.banner-link{
+  margin-right: 20px;
+  text-decoration: none;
+  color: inherit;
 }
 </style>
