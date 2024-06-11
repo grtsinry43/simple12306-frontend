@@ -3,6 +3,7 @@
 import {onMounted, reactive} from "vue";
 import {useUserStore} from "@/store/user.js";
 import {newOrder} from "@/api/order.js";
+import {getTickets} from "@/api/tickets.js";
 
 const store = useUserStore();
 
@@ -38,11 +39,12 @@ const buyTicketHandle = () => {
 }
 
 //打开购买车票的弹窗
-const openOrderView = (id) => {
+const openOrderView = (id, type) => {
   console.log(store.tickets)
   console.log("打开购买车票的弹窗");
   console.log(id);
   state.form.ticketId = id;
+  state.form.type = type;
   state.form.userId = store.userInfo.userId;
   state.dialogVisible = true;
 }
@@ -77,7 +79,7 @@ const openOrderView = (id) => {
             <!--显示type_1值-->
             <span>剩余：{{ row.type_1 }}</span>
             <!--如果type_1大于0，显示el-button(primary)-->
-            <el-button @click="openOrderView(row.id)" v-if="row.type_1 > 0" type="primary">购买</el-button>
+            <el-button @click="openOrderView(row.id,1)" v-if="row.type_1 > 0" type="primary">购买</el-button>
             <!--否则显示el-button(禁用)-->
             <el-button v-else disabled>售罄</el-button>
           </template>
@@ -88,7 +90,7 @@ const openOrderView = (id) => {
             <span v-else-if="row.train_type === 2">一等座</span>
             <span v-else-if="row.train_type === 3">硬卧</span>
             <span>剩余：{{ row.type_2 }}</span>
-            <el-button @click="openOrderView(row.id)" v-if="row.type_2 > 0" type="primary">购买</el-button>
+            <el-button @click="openOrderView(row.id,2)" v-if="row.type_2 > 0" type="primary">购买</el-button>
             <el-button v-else disabled>售罄</el-button>
           </template>
         </el-table-column>
@@ -98,7 +100,7 @@ const openOrderView = (id) => {
             <span v-else-if="row.train_type === 2">二等座</span>
             <span v-else-if="row.train_type === 3">软卧</span>
             <span>剩余：{{ row.type_3 }}</span>
-            <el-button @click="openOrderView(row.id)" v-if="row.type_3 > 0" type="primary">购买</el-button>
+            <el-button @click="openOrderView(row.id,3)" v-if="row.type_3 > 0" type="primary">购买</el-button>
             <el-button v-else disabled>售罄</el-button>
           </template>
         </el-table-column>
@@ -108,7 +110,7 @@ const openOrderView = (id) => {
             <span v-else-if="row.train_type === 2">无座</span>
             <span v-else-if="row.train_type === 3">无座</span>
             <span>剩余：{{ row.type_4 }}</span>
-            <el-button @click="openOrderView(row.id)" v-if="row.type_4 > 0" type="primary">购买</el-button>
+            <el-button @click="openOrderView(row.id,4)" v-if="row.type_4 > 0" type="primary">购买</el-button>
             <el-button v-else disabled>售罄</el-button>
           </template>
         </el-table-column>

@@ -17,6 +17,7 @@ ins.interceptors.response.use(
         if (token) {
             const userStore = useUserStore();
             userStore.setToken(token);
+            localStorage.setItem('token', token);
             console.log(userStore.token)
         }
 
