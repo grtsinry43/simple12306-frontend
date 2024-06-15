@@ -1,18 +1,22 @@
 <script setup>
 import {useUserStore} from "@/store/user.js";
 import {onMounted, reactive} from "vue";
-import {getInfo, updateInfo, verify, verifyEdu} from "@/api/user.js";
+import {delUser, getInfo, updateInfo, verify, verifyEdu} from "@/api/user.js";
+import {ElMessage} from "element-plus";
 
 const store = useUserStore();
 const state = reactive({
   dialogVisible: false, // 控制弹窗的显示或隐藏
+  deleteVisible: false, // 控制删除用户的弹窗
+  passwordVisible: false, // 控制确认密码的弹窗
   form: {
     username: store.userName,
     email: store.userInfo.email ? store.userInfo.email : '',
     phone: store.userInfo.phone ? store.userInfo.phone : '',
     region: store.userInfo.region ? store.userInfo.region : '',
     gender: store.userInfo.gender ? store.userInfo.gender : '',
-  }
+  },
+  password: '',
 });
 //页面创建时，获取用户信息
 onMounted(() => {
@@ -63,6 +67,31 @@ const verifyHandle = () => {
     isVerified: true
   });
 }
+const deleteHandle = () => {
+  state.deleteVisible = true;
+}
+const openPwdHandle = () => {
+  state.passwordVisible = true;
+}
+const deleteUserHandle = () => {
+  console.log("删除用户");
+  delUser({
+    username: store.userName,
+    password: state.password,
+  }).then(res => {
+    if (res === null){
+      return;
+    }
+    console.log(res);
+    ElMessage({
+      message: `用户 ${store.userName} 删除成功`,
+      type: 'success'
+    });
+    store.logout();
+  });
+  state.passwordVisible = false;
+  state.deleteVisible = false;
+}
 </script>
 
 <template>
@@ -79,10 +108,13 @@ const verifyHandle = () => {
           <div>{{ key }}: {{ value }}</div>
         </div>
       </div>
-      <div class="action">
+      <div class="action" v-if="store.isLogin">
         <ElButton type="primary" @click="editInfoHandle">修改用户信息</ElButton>
         <ElButton type="primary" v-if="!store.userInfo.isStudent" @click="verifyEduHandle">验证学生身份</ElButton>
         <ElButton type="primary" v-if="!store.userInfo.isVerified" @click="verifyHandle">实名认证</ElButton>
+      </div>
+      <div class="action" v-if="store.isLogin">
+        <ElButton type="danger" @click="deleteHandle">删除用户</ElButton>
       </div>
     </div>
     <ElDialog v-model="state.dialogVisible" title="修改用户信息">
@@ -106,9 +138,25 @@ const verifyHandle = () => {
           <ElInput v-model="state.form.region"></ElInput>
         </ElFormItem>
         <ElFormItem>
-          <ElButton type="primary" @click="updateInfoHandle">提交</ElButton>
+          <ElButton type="primary" @click="updateInfoHandle">提 交</ElButton>
         </ElFormItem>
       </ElForm>
+    </ElDialog>
+    <ElDialog v-model="state.deleteVisible" title="删除用户">
+      <p>确定要删除用户吗？您的所有信息都将被删除</p>
+      <ElButton type="primary" @click="state.deleteVisible = false">取 消</ElButton>
+      <ElButton type="danger" @click="openPwdHandle">删 除</ElButton>
+      <el-dialog
+          v-model="state.passwordVisible"
+          title="验证密码确认操作"
+          append-to-body
+      >
+        <ElInput v-model="state.password" type="password" placeholder="请输入密码"></ElInput>
+        <template #footer>
+          <ElButton @click="state.passwordVisible = false">取 消</ElButton>
+          <ElButton type="primary" @click="deleteUserHandle">确 定</ElButton>
+        </template>
+      </el-dialog>
     </ElDialog>
   </div>
 
@@ -126,6 +174,7 @@ const verifyHandle = () => {
   z-index: 1;
   padding: 40px;
 }
+
 .user-inner {
   width: 60%;
   margin-top: 20px;
@@ -138,22 +187,27 @@ const verifyHandle = () => {
   align-items: center;
   padding: 40px;
 }
+
 .userinfo-inner {
   padding: 20px;
   width: 60%;
 }
-.userinfo-inner .key{
+
+.userinfo-inner .key {
   font-weight: bold;
 }
-.userinfo-inner div{
+
+.userinfo-inner div {
   margin-bottom: 5px;
 }
-.title{
+
+.title {
   font-size: 30px;
   font-weight: bold;
   margin-bottom: 20px;
 }
-.action{
+
+.action {
   display: flex;
 }
 </style>

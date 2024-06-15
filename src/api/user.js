@@ -11,6 +11,28 @@ export function login(data) {
     })
 }
 
+export function register(data) {
+    return request({
+        url: '/api/user/reg',
+        contentType: 'application/json',
+        method: 'post',
+        params: data
+    })
+
+}
+
+export function delUser(data) {
+    return request({
+        url: '/api/user/del',
+        method: 'delete',
+        params: {
+            username: data.username,
+            password: data.password,
+        }
+    })
+
+}
+
 export function getInfo(){
     return request({
         url: '/api/user/info',

@@ -1,19 +1,35 @@
 <script setup>
 import {reactive, toRefs} from 'vue';
-import {login} from "@/api/user.js";
+import {login, register} from "@/api/user.js";
 import {useUserStore} from "@/store/user.js";
+import {ElMessage} from "element-plus";
+
 const store = useUserStore();
 let data = reactive({
   username: '',
-  password: ''
+  password: '',
+  passwordConfirm: ''
 })
 
-const loginHandle = () => {
+const registerHandle = () => {
   console.log(data);
-  login(data).then(res => {
+  if (data.password !== data.passwordConfirm) {
+    ElMessage({
+      message: '两次输入的密码不一致',
+      type: 'error'
+    });
+    return;
+  }
+  register({
+    username: data.username,
+    password: data.password
+  }).then(res => {
     console.log(res);
-    store.login(res);
-  })
+    ElMessage({
+      message: `用户 ${res.username} 注册成功`,
+      type: 'success'
+    });
+  });
 }
 </script>
 
@@ -26,12 +42,15 @@ const loginHandle = () => {
       <el-form-item label="密码">
         <el-input v-model="data.password" type="password"></el-input>
       </el-form-item>
-      <el-form-item>
-        <el-button type="primary" @click="loginHandle">登录</el-button>
+      <el-form-item label="确认密码">
+        <el-input v-model="data.passwordConfirm" type="password"></el-input>
       </el-form-item>
-      <span>还没有帐号？<RouterLink :to="{
-        name: 'register'
-      }">注册一个</RouterLink></span>
+      <el-form-item>
+        <el-button type="primary" @click="registerHandle">注册</el-button>
+      </el-form-item>
+      <span>已有帐号？<RouterLink :to="{
+        name: 'login'
+      }">登录</RouterLink></span>
     </el-form>
   </div>
 </template>
