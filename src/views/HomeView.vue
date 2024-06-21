@@ -13,7 +13,9 @@ const store = useUserStore();
 let data = reactive({
   from: '',
   to: '',
-  date: ''
+  date: '',
+  startPrice: '',
+  endPrice: ''
 })
 
 //查询车票
@@ -33,6 +35,23 @@ const searchHandle = () => {
     data.date = formatDate(data.date);
   }
   console.log(data);
+  //校验价格区间的格式，如果不为空，必须是数字，并且startPrice小于endPrice
+  if (data.startPrice !== '' && data.endPrice !== '') {
+    if (isNaN(Number.parseFloat(data.startPrice)) || isNaN(Number.parseFloat(data.endPrice))) {
+      ElMessage({
+        message: '价格区间必须是数字',
+        type: 'warning'
+      });
+      return;
+    }
+    if (data.startPrice > data.endPrice) {
+      ElMessage({
+        message: '最低价格不能大于最高价格',
+        type: 'warning'
+      });
+      return;
+    }
+  }
   searchTickets(data).then(res => {
     console.log(res);
     store.setTickets(res);
@@ -72,6 +91,11 @@ const searchHandle = () => {
                 type="date"
                 placeholder="选择日期">
             </el-date-picker>
+          </el-form-item>
+          <el-form-item label="价格区间">
+            <el-input v-model="data.startPrice" placeholder="最低价格"></el-input>
+            <span> - </span>
+            <el-input v-model="data.endPrice" placeholder="最高价格"></el-input>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="searchHandle">查询</el-button>
