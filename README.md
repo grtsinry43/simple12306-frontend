@@ -13,7 +13,7 @@ docker build -t simple12306-frontend .
 ### 运行容器
 
 ```sh
-docker run -p 5173:5173 --name simple12306-frontend simple12306-frontend
+docker run -p 3000:3000 --name simple12306-frontend simple12306-frontend
 ```
 
 ## 运行项目
